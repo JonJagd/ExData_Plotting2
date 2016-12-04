@@ -22,6 +22,8 @@ rm(list=ls())
 # Set working directory
 setwd("C:/Git/R/ExData_Plotting2")
 
+# Load required packages
+require(stats)
 
 ## -----------------------------------------------------------------------------------
 ## Load data into the program
@@ -30,10 +32,14 @@ NEI <- readRDS("data/summarySCC_PM25.rds")
 
 
 ## -----------------------------------------------------------------------------------
-## Summing up total emissions by year and putting into a data frame
+## Summing up total emissions by year and putting it into a data frame
 ## -----------------------------------------------------------------------------------
 total <-with(NEI, tapply(Emissions, year, sum, na.rm = T))
-total <- as.data.frame(total, col.names = names(total))
+## Putting years and sums in seperate vectors to simplify plotting and adding trendline
+sums <- as.vector(total)
+years <- names(total)
+
+#total <- as.data.frame(total, col.names = names(total))
 
 ## -----------------------------------------------------------------------------------
 ## Making the plot
@@ -45,6 +51,9 @@ par(mfrow = c(1, 1))
 ## We create the plot and save it to a PNG-file
 png("plot1.png", width = 480, height = 480, res = 72)
 
-plot(row.names(total), total$total, xlim = c(1998, 2009), pch = 19, main = "Plot 1 - Total PM2.5 emissions per year", xlab = "Year", ylab = "PM2.5 in tons")
+plot(years, sums, xlim = c(1998, 2009), pch = 19, main = "Plot 1 - Total PM2.5 emissions per year", xlab = "Year", ylab = "PM2.5 in tons")
+
+## We add a simple regression line to clearly show the trend
+abline(lsfit(years, sums))
 
 dev.off()

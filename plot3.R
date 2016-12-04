@@ -28,35 +28,54 @@ rm(list=ls())
 # Set working directory
 setwd("C:/Git/R/ExData_Plotting2")
 
+# Load required packages
+library(ggplot2)
+##library(ggplot2movies)
 
 ## -----------------------------------------------------------------------------------
 ## Load data into the program
 ## -----------------------------------------------------------------------------------
 NEI <- readRDS("data/summarySCC_PM25.rds")
-SCC <- readRDS("data/Source_Classification_Code.rds")
+##SCC <- readRDS("data/Source_Classification_Code.rds")
 
 ## -----------------------------------------------------------------------------------
-## Subsetting the date to Baltimore City
+## Subsetting the data to Baltimore City and the different types
 ## -----------------------------------------------------------------------------------
-total <- subset.data.frame(NEI, NEI$fips == "24510")
+bcAll <- subset.data.frame(NEI, NEI$fips == "24510")
+bcPoint <- subset.data.frame(NEI, NEI$fips == "24510" & NEI$type == "POINT")
+bcNonPoint <- subset.data.frame(NEI, NEI$fips == "24510" & NEI$type == "NONPOINT")
+bcOnRoad <- subset.data.frame(NEI, NEI$fips == "24510" & NEI$type == "ON-ROAD")
+bcNonRoad <- subset.data.frame(NEI, NEI$fips == "24510" & NEI$type == "NON-ROAD")
+
 
 ## -----------------------------------------------------------------------------------
-## Summing up total emissions by year and putting it into a data frame
+## Summing up total emissions by year and type and putting it into a data frame
 ## -----------------------------------------------------------------------------------
-total <-with(total, tapply(Emissions, year, sum, na.rm = T))
-total <- as.data.frame(total, col.names = names(total))
+
+totalBcAll <-with(bcAll, tapply(Emissions, INDEX = list(year, type), sum, na.rm = T))
+totalBcAll <- as.data.frame(totalBcAll)
+
+## First we do it for type POINT
+##totalBcPoint <-with(bcPoint, tapply(Emissions, year, sum, na.rm = T))
+##totalBcPoint <- as.data.frame(totalBcPoint)
+
 
 ## -----------------------------------------------------------------------------------
 ## Making the plot
 ## -----------------------------------------------------------------------------------
 
 ## Setting the graphical parameters
-par(mfrow = c(1, 1))
+##par(mfrow = c(1, 1))
 
 ## We create the plot and save it to a PNG-file
-png("plot2.png", width = 480, height = 480, res = 72)
+##png("plot2.png", width = 480, height = 480, res = 72)
 
-plot(row.names(total), total$total, xlim = c(1998, 2009), pch = 19, main = "Plot 2 - Total PM2.5 emissions per year in Baltimore City", xlab = "Year", ylab = "PM2.5 in tons")
+##qplot(row.names(totalBcPoint), totalBcPoint, data=totalBcPoint, geom=c("point","smooth"), method="lm")
+
+ggplot(totalBcAll, aes(factor(row.names(totalBcAll)), totalBcAll)) +
+geom_point() +
+facet_wrap(~names(totalBcAll), nrow = 2, ncol = 2) + ## Jeg mangler en header der hedder Type og en der hedder Sum og så skal det ligge i en tabel med 2 kolonner
+geom_smooth(method = "lm", se = FALSE, color = "black", aes(group = 1))
+
 
 dev.off()
-
