@@ -8,14 +8,10 @@
 ## from 1999-2008 for Baltimore City? Which have seen increases in emissions from 1999-2008? 
 ## Use the ggplot2 plotting system to make a plot answer this question.
 ## -----------------------------------------------------------------------------------
-## This program will load data from the following two sources:
+## This program will load data from the following source:
 ## 
 ## PM2.5 Emissions Data (summarySCC_PM25.rds): This file contains a data frame with all 
 ## of the PM2.5 emissions data for 1999, 2002, 2005, and 2008
-## 
-## Source Classification Code Table (Source_Classification_Code.rds): This table 
-## provides a mapping from the SCC digit strings in the Emissions table to the actual 
-## name of the PM2.5 source. 
 ## 
 ##
 ## -----------------------------------------------------------------------------------
